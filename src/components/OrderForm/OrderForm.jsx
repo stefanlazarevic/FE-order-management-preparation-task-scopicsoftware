@@ -23,6 +23,8 @@ class OrderForm extends Component {
             date: order ? order.date : moment(),
             items: order ? order.items : [],
             price: order ? order.price : 0,
+            isChecked: order ? order.isChecked : false,
+            isLocked: order ? order.isLocked : false,
         };
     }
 

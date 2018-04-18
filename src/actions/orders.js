@@ -1,24 +1,28 @@
 import * as ordersActionTypes from '../actiontypes/orders';
 
 export const createOrder = orderData => dispatch => {
-        const newOrder = {
-            id: orderData.id,
-            date: orderData.date,
-            price: orderData.price,
-            isLocked: false,
-            isSelected: false,
-            items: orderData.items,
-        };
-
         dispatch({
             type: ordersActionTypes.POST_ORDER,
-            payload: newOrder,
+            payload: orderData,
         });
 };
 
-export const updateOrder = (orderData, index) => dispatch => {
+export const updateLockedStatus = (id, value) => dispatch =>{
     dispatch({
-        type: ordersActionTypes.PATCH_ORDER,
-        payload: orderData
+        type: ordersActionTypes.UPDATE_LOCKED_STATUS,
+        payload: {
+            id,
+            isLocked: value,
+        },
     });
-};
+}
+
+export const updateCheckedStatus = (id, value) => dispatch =>{
+    dispatch({
+        type: ordersActionTypes.UPDATE_SELECTED_STATUS,
+        payload: {
+            id,
+            isSelected: value,
+        },
+    });
+}

@@ -12,6 +12,7 @@ class Orders extends Component {
         super(props);
     }
 
+
     render() {
 
         const orderKeys = Object.keys(this.props.orders);
@@ -31,11 +32,11 @@ class Orders extends Component {
                                 Records 1-{ orderKeys.length } of { orderKeys.length }
                             </th>
                             <th className="text-right">
-                                <Button>Delete Selected ({ 0 })</Button>
+                                <Button>Delete Selected ({ this.props.selected < 0 ? 0 : this.props.selected })</Button>
                             </th>
                         </tr>
                         <tr>
-                            <th><Checkbox></Checkbox></th>
+                            <th><Checkbox onChange={ this.props.onAllCheckboxClick } checked={ this.props.selectAll }></Checkbox></th>
                             <th className="sortable">Order Number <span className="caret"></span></th>
                             <th className="sortable">Order Date <span className="caret"></span></th>
                             <th className="text-right sortable">Price <span className="caret"></span></th>
@@ -44,10 +45,10 @@ class Orders extends Component {
                     </thead>
                     <tfoot>
                         <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td className="text-right">Total Price: { totalPrice.toFixed(2) }</td>
+                            <td colSpan={3}></td>
+                            <td className="text-right">
+                                Total Price: { (totalPrice + totalPrice * 0.15).toFixed(2) }
+                            </td>
                             <td></td>
                         </tr>
                     </tfoot>
@@ -57,8 +58,12 @@ class Orders extends Component {
                                 const order = this.props.orders[orderKey];
                                 return <Order key={ orderKey }
                                               order={ order }
-                                              onOrderClick={ () => this.props.onOrderClick(orderKey) }
-                                              onCheckboxClick={ () => this.onOrderSelect(orderKey) } />
+                                              onOrderClick={
+                                                  () => this.props.onOrderClick(orderKey) }
+                                              onCheckboxClick={
+                                                  (checkedStatus) => this.props.onOrderSelect(orderKey, checkedStatus) }
+                                              onLockClick={
+                                                  (checkedStatus) => this.props.onLockClick(orderKey, checkedStatus) } />
                             })
                         }
                     </tbody>
@@ -71,3 +76,4 @@ class Orders extends Component {
 const mapStateToProps = state => ({ orders: state.orders });
 
 export default connect(mapStateToProps, {})(Orders);
+

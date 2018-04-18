@@ -11,7 +11,7 @@ class Summary extends Component {
     render() {
         const { items, price } = this.props;
 
-        const tax = 0.15 * price;
+        const tax = price * 0.15;
 
         return (
             <div className="Summary">
@@ -26,7 +26,7 @@ class Summary extends Component {
                     <tbody>
                         <tr>
                             <td>Ext. Price:</td>
-                            <td>{ price.toFixed(2) }</td>
+                            <td>{ (price).toFixed(2) }</td>
                         </tr>
                         <tr>
                             <td>Tax:</td>
