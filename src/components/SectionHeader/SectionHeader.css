@@ -1,0 +1,9 @@
+.section-header__row * {
+    margin: 0;
+}
+
+.section-header__row {
+    padding-top: 15px;
+    padding-bottom: 10px;
+    vertical-align: center;
+}

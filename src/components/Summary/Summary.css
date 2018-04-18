@@ -1,0 +1,23 @@
+.Summary {
+    background-color: #eee;
+    padding: 5px 15px;
+    margin-bottom: 20px;
+}
+
+.Summary h3{
+    margin: 0 0 10px;
+    padding: 5px 0;
+    border-bottom: 1px solid #ccc;
+}
+
+.Summary__table {
+    width: 100%;
+}
+
+.Summary__table td {
+    padding: 5px;
+}
+
+.Summary__table tfoot {
+    border-top: 2px solid #333;
+}

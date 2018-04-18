@@ -1,0 +1,7 @@
+.sortable {
+    cursor: pointer;
+}
+
+.sortable.active .caret {
+    transform: rotate(180deg);
+}
