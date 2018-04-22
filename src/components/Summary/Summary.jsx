@@ -1,44 +1,36 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
 import './Summary.css';
 
-class Summary extends Component {
-    constructor(props) {
-        super(props);
-    }
+const Summary = props => {
+    const { items, price } = props;
+    const tax = price * 0.15;
 
-    render() {
-        const { items, price } = this.props;
-
-        const tax = price * 0.15;
-
-        return (
-            <div className="Summary">
-                <h3>Totals</h3>
-                <table className="Summary__table">
-                    <tfoot>
-                        <tr>
-                            <td>Total Value:</td>
-                            <td>{ (price + tax).toFixed(2) }</td>
-                        </tr>
-                    </tfoot>
-                    <tbody>
-                        <tr>
-                            <td>Ext. Price:</td>
-                            <td>{ (price).toFixed(2) }</td>
-                        </tr>
-                        <tr>
-                            <td>Tax:</td>
-                            <td>{ tax.toFixed(2) }</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <h5>Total items in Order: { items.length }</h5>
-            </div>
-        );
-
-    }
+    return (
+        <div className="Summary">
+            <h3>Totals</h3>
+            <table className="Summary__table">
+                <tfoot>
+                    <tr>
+                        <td>Total Value:</td>
+                        <td>{ (price + tax).toFixed(2) }</td>
+                    </tr>
+                </tfoot>
+                <tbody>
+                    <tr>
+                        <td>Ext. Price:</td>
+                        <td>{ price.toFixed(2) }</td>
+                    </tr>
+                    <tr>
+                        <td>Tax:</td>
+                        <td>{ tax.toFixed(2) }</td>
+                    </tr>
+                </tbody>
+            </table>
+            <h5>Total items in Order: { items.length }</h5>
+        </div>
+    );
 };
 
 Summary.propTypes = {

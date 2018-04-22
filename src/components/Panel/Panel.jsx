@@ -2,13 +2,19 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Tabs, Tab } from 'react-bootstrap';
 
+import './Panel.css';
+
 import SectionHeader from '../SectionHeader/SectionHeader.jsx';
 import OrderForm from '../OrderForm/OrderForm.jsx';
 import Orders from '../Orders/Orders.jsx';
 
-import { createOrder, updateLockedStatus, updateCheckedStatus } from '../../actions/orders';
-
-import './Panel.css';
+import {
+    createOrder,
+    updateLockedStatus,
+    updateCheckedStatus,
+    deleteOrder,
+    fetchOrdersFromLocalStorage
+} from '../../actions/orders';
 
 class Panel extends Component {
     constructor(props) {
@@ -16,14 +22,17 @@ class Panel extends Component {
 
         this.state = {
             tabs: [],
-            selected: 0,
             selectAll: false,
             inCreateMode: false,
             defaultActiveKey: -1,
         };
     }
 
-    toggleCreateMode = () => this.setState(state => { return { inCreateMode: !state.inCreateMode }});
+    componentWillMount() {
+        this.props.fetchOrdersFromLocalStorage();
+    }
+
+    toggleCreateMode = () => this.setState(state => ({ inCreateMode: !state.inCreateMode }));
 
     createNewOrder = data => {
         this.setState({ selectAll: false });
@@ -36,42 +45,30 @@ class Panel extends Component {
         this.removeTab(data.id);
     }
 
-    setActiveKey = (eventKey) => {
-        this.setState({
-            currentTab: eventKey
-        });
-    }
+    setActiveKey = eventKey => this.setState({ currentTab: eventKey })
 
     removeTab = name => {
         const index = this.state.tabs.indexOf(name);
         if (index >= 0) {
-            this.setState(state => {
-                return {
-                    tabs: [
-                        ...state.tabs.slice(0, index),
-                        ...state.tabs.slice(index + 1),
-                    ],
-                    currentTab: --state.currentTab
-                };
-            });
+            this.setState(state => ({
+                tabs: [
+                    ...state.tabs.slice(0, index),
+                    ...state.tabs.slice(index + 1),
+                ],
+                currentTab: --state.currentTab
+            }));
         }
     }
 
     openTab = id => {
         if (this.props.orders[id].isLocked) {
-            return;
+            return null;
         }
+
         this.setState(state => {
             const { tabs } = state;
             const tabIndex = tabs.indexOf(id);
-            if (tabIndex < 0) {
-                tabs.push(id);
-                return { tabs };
-            } else {
-                return {
-                    currentTab: tabIndex
-                }
-            }
+            return tabIndex < 0 ? { tabs: tabs.concat(id) } : { currentTab: tabIndex };
         });
     }
 
@@ -87,7 +84,7 @@ class Panel extends Component {
             }
         }
 
-        this.setState(state => { return { selected } });
+        this.setState(state => ({ selected }));
 
         this.props.updateCheckedStatus(id, checked);
     }
@@ -106,7 +103,7 @@ class Panel extends Component {
             }
         }
 
-        this.setState(state => { return { selected } });
+        this.setState(state => ({ selected }));
 
         this.props.updateLockedStatus(id, locked);
     }
@@ -116,18 +113,12 @@ class Panel extends Component {
         const selectAll = !this.state.selectAll;
         let selected = 0;
 
-        orderKeys.reduce((acc, key) => {
-            const order = this.props.orders[key];
+        orderKeys.forEach((key, index) => {
             this.props.updateCheckedStatus(key, selectAll);
-            if (selectAll && !order.isLocked) {
-                selected++;
-            }
-            return 0;
-        }, 0);
+        });
 
-        this.setState(state => { return { selectAll, selected } });
+        this.setState(state => ({ selectAll, selected }));
     }
-
 
     render() {
         const TabHeaderTitle = this.state.inCreateMode ? 'New Order' : 'Order List';
@@ -136,7 +127,9 @@ class Panel extends Component {
             return (
                 <Tab key={ index } eventKey={ index } title={ order }>
                     <SectionHeader title={ `Edit Order ${ order }` } />
-                    <OrderForm order={ this.props.orders[order] } onSaveButtonClick={ this.updateOrder } onCancelButtonClick={ () => this.removeTab(order) }/>
+                    <OrderForm order={ this.props.orders[order] }
+                               onSaveButtonClick={ this.updateOrder }
+                               onCancelButtonClick={ () => this.removeTab(order) } />
                 </Tab>
             );
         });
@@ -154,6 +147,7 @@ class Panel extends Component {
                         onOrderSelect={ this.onOrderSelect }
                         onLockClick={ this.onLockClick }
                         onAllCheckboxClick={ this.onAllCheckboxClick }
+                        onDeleteOrder={ this.props.deleteOrder }
                 />;
 
         // JSX Template.
@@ -182,6 +176,8 @@ export default connect(
     {
         createOrder,
         updateLockedStatus,
-        updateCheckedStatus
+        updateCheckedStatus,
+        deleteOrder,
+        fetchOrdersFromLocalStorage
     }
 )(Panel);

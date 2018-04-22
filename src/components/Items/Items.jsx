@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+
 import './Items.css';
+
 import SectionHeader from '../SectionHeader/SectionHeader.jsx';
 import Item from './Item.jsx';
 
@@ -21,7 +23,7 @@ const Items = props => {
                         <th>Product</th>
                         <th>Quantity</th>
                         <th>Price</th>
-                        <th>Extended Price</th>
+                        <th className="text-right">Extended Price</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -32,17 +34,23 @@ const Items = props => {
                 </tfoot>
                 <tbody>
                     {
-                        props.items.map((item, index) => {
-                            return (
-                                <Item key={ index }
-                                index={ index }
-                                product={ item.product }
-                                quantity={ item.quantity }
-                                price={ item.price }
-                                onDelete={ (evt) => props.onTrashButtonClick(index) }
-                                onChange={ props.onItemInputChange }/>
-                            );
-                        })
+                        props.items.length ?
+                            props.items.map((item, index) => {
+                                return (
+                                    <Item key={ index }
+                                        index={ index }
+                                        product={ item.product }
+                                        quantity={ item.quantity }
+                                        price={ item.price }
+                                        onDelete={ (evt) => props.onTrashButtonClick(index) }
+                                        onChange={ props.onItemInputChange }/>
+                                );
+                            }) :
+                        <tr>
+                            <td colSpan={5}>
+                                <h4>No items.</h4>
+                            </td>
+                        </tr>
                     }
                 </tbody>
             </table>

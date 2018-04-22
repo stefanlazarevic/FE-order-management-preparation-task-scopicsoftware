@@ -4,7 +4,7 @@ import { Grid } from 'react-bootstrap';
 
 import Panel from '../Panel/Panel.jsx';
 
-const Navigation = (props) => {
+const Navigation = props => {
     return (
         <BrowserRouter>
             <Grid>

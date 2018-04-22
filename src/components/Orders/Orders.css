@@ -5,3 +5,12 @@
 .sortable.active .caret {
     transform: rotate(180deg);
 }
+
+.tr--gray {
+    background-color: #ededed;
+    height: 45px;
+}
+
+.tr--gray th {
+    padding: 0 5px;
+}

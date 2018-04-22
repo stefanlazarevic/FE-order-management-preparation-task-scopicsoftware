@@ -23,7 +23,7 @@ class OrderForm extends Component {
             date: order ? order.date : moment(),
             items: order ? order.items : [],
             price: order ? order.price : 0,
-            isChecked: order ? order.isChecked : false,
+            isSelected: order ? order.isSelected : false,
             isLocked: order ? order.isLocked : false,
         };
     }
@@ -75,7 +75,7 @@ class OrderForm extends Component {
         return (
             <div>
                 <FormActionBar onSaveButtonClick={ this.handleSaveButtonClick }
-                               onCancelButtonClick={ this.props.onCancelButtonClick } />
+                                onCancelButtonClick={ this.props.onCancelButtonClick } />
                 <Row>
                     <Col md={7}>
                         <Form horizontal>
@@ -114,12 +114,14 @@ class OrderForm extends Component {
                     </Col>
                 </Row>
                 <Row>
-                    <Items items={ this.state.items } onNewItemButtonClick={ this.onNewItemButtonClick }
-                                                      onTrashButtonClick={ this.onTrashButtonClick }
-                                                      onItemInputChange={ this.onItemInputChange } />
+                    <Col md={12}>
+                        <Items items={ this.state.items } onNewItemButtonClick={ this.onNewItemButtonClick }
+                                                        onTrashButtonClick={ this.onTrashButtonClick }
+                                                        onItemInputChange={ this.onItemInputChange } />
+                    </Col>
                 </Row>
                 <FormActionBar onCancelButtonClick={ this.props.onCancelButtonClick }
-                               onSaveButtonClick={ this.handleSaveButtonClick } />
+                            onSaveButtonClick={ this.handleSaveButtonClick } />
             </div>
         );
     }

@@ -1,5 +1,6 @@
 .table {
     width: 100%;
+    border: 1px solid #eee;
 }
 
 .table thead, tbody, tfoot {
@@ -12,4 +13,5 @@
 
 .tr--gray {
     background-color: #ededed;
+    height: 30px;
 }

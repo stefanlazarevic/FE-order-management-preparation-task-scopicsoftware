@@ -1,11 +1,14 @@
 import React from 'react';
 import { Row, Col, ButtonToolbar, Button } from 'react-bootstrap';
 
-const FormActionBar = (props) => {
+import './FormActionBar.css';
+
+const FormActionBar = props => {
     return (
-        <Row style={ { marginBottom: 20 } }>
-            <Col md={12} style={ { backgroundColor: '#eee', padding: '10px 15px' } }>
-                <ButtonToolbar>
+        <Row className="actionbar__row">
+            {/* This inline style is just for practice purposes. */}
+            <Col md={12}>
+                <ButtonToolbar style={ { backgroundColor: '#eee', padding: '10px 0' } }>
                     <Button onClick={ props.onSaveButtonClick } bsStyle="primary">Save</Button>
                     <Button onClick={ props.onCancelButtonClick }>Cancel</Button>
                 </ButtonToolbar>
