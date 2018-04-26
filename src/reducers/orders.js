@@ -5,7 +5,7 @@ export default (state = {}, action) => {
     const newOrders = Object.assign({}, state.orders);
     switch (action.type) {
         case ordersActionTypes.FETCH_ORDERS: {
-            const orders = JSON.parse(localStorage.getItem('RFE-orders'));
+            const orders = JSON.parse(localStorage.getItem('RFE-orders')) || {};
             Object.keys(orders).forEach(id => {
                 orders[id].date = moment(orders[id].date);
                 orders[id].isSelected = false; // Unselect all orders on initial fetch from local storage.
