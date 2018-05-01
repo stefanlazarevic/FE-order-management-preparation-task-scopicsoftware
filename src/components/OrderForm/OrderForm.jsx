@@ -2,73 +2,63 @@ import React, { Component } from 'react';
 import { Row, Col, Form, FormGroup, ControlLabel, FormControl } from 'react-bootstrap';
 import FormActionBar from '../FormActionBar/FormActionBar.jsx';
 import Summary from '../Summary/Summary.jsx';
-import DatePicker from 'react-datepicker';
-import moment from 'moment';
 import 'react-datepicker/dist/react-datepicker-cssmodules.css';
 import UniqueIdGenerator from '../Helpers/UniqueIdGenerator';
 import Items from '../Items/Items.jsx';
+import moment from 'moment';
 
-const monthStartDate = moment().startOf('month');
-const monthEndDate = moment().endOf('month');
-
+import DatePickerWrap from '../DatePickerWrap/DatePickerWrap.jsx';
 
 class OrderForm extends Component {
     constructor(props) {
         super(props);
 
-        const { order } = props;
+        const generator = UniqueIdGenerator(this.props.orders);
 
-        this.state = {
-            id: order ? order.id : UniqueIdGenerator(props.orders)(),
-            date: order ? order.date : moment(),
-            items: order ? order.items : [],
-            price: order ? order.price : 0,
-            isSelected: order ? order.isSelected : false,
-            isLocked: order ? order.isLocked : false,
-        };
+        this.id = this.props.order ? this.props.order.id : generator();
+        this.date = this.props.order ? this.props.order.date : moment();
+        this.items = this.props.order ? this.props.order.items : [];
     }
 
-    onDatePickerChange = date => this.setState({ date });
+    componentDidMount() {
+        this.computeSummary(this.items);
+    }
 
-    handleSaveButtonClick = () => this.props.onSaveButtonClick(this.state);
-
-    onNewItemButtonClick = () => {
-        const newEmptyItem = {
-            product: '',
-            quantity: 0,
-            price: 0,
+    handleSaveButtonClick = () => {
+        const formData = {
+            id: this.id,
+            date: this.DatePickerWrap.getDate(),
+            items: this.Items.getItems(),
+            price: this.price,
+            isSelected: this.props.order ? this.props.order.isSelected : false,
+            isLocked: this.props.order ? this.props.order.isLocked : false,
         };
 
-        this.setState(state => {
-            const newItems = state.items;
-            newItems.unshift(newEmptyItem);
-            return {
-                items: newItems
-            };
-        });
+        this.props.onSaveButtonClick(formData);
     }
 
-    onTrashButtonClick = index => {
-        this.setState(state => {
-            const items = [
-                ...state.items.slice(0, index),
-                ...state.items.slice(index + 1),
-            ];
-
-            return { items };
-        });
+    shouldComponentUpdate() {
+        return false;
     }
 
-    onItemInputChange = (evt, property, index) => {
-        const value = evt.target.value;
-        this.setState(state => {
-            const items = state.items.slice();
-            items[index][property] = value;
-            const price = items.reduce((sum, item) => {
-                return sum += item.quantity * item.price;
-            }, 0);
-            return { items, price };
-        });
+    computeSummary = items => {
+        const { length } = items;
+
+        const price = items.reduce((acc, item) => {
+            return acc += item.price * item.quantity;
+        }, 0);
+
+        this.price = price;
+
+        const tax = price * 0.15;
+
+        const summary = {
+            length,
+            tax,
+            price
+        };
+
+        this.Summary.update(summary);
     }
 
     render() {
@@ -84,7 +74,7 @@ class OrderForm extends Component {
                                     Order No.:
                                 </Col>
                                 <Col sm={9}>
-                                    <FormControl.Static>{ this.state.id }</FormControl.Static>
+                                    <FormControl.Static>{ this.id }</FormControl.Static>
                                 </Col>
                             </FormGroup>
                             <FormGroup controlId="formHorizontalDate">
@@ -92,11 +82,8 @@ class OrderForm extends Component {
                                     Date:
                                 </Col>
                                 <Col sm={9}>
-                                    <DatePicker fixedHeight className="form-control"
-                                        minDate={ monthStartDate }
-                                        maxDate={ monthEndDate }
-                                        selected={ this.state.date }
-                                        onChange={ this.onDatePickerChange } />
+                                    <DatePickerWrap onRef={ DatePickerWrap => (this.DatePickerWrap = DatePickerWrap)}
+                                                    date={ this.date } />
                                 </Col>
                             </FormGroup>
                             <FormGroup controlId="formHorizontalTax">
@@ -110,14 +97,12 @@ class OrderForm extends Component {
                         </Form>
                     </Col>
                     <Col md={5}>
-                        <Summary items={ this.state.items } price={ this.state.price }/>
+                        <Summary onRef={ Summary => (this.Summary = Summary) }/>
                     </Col>
                 </Row>
                 <Row>
                     <Col md={12}>
-                        <Items items={ this.state.items } onNewItemButtonClick={ this.onNewItemButtonClick }
-                                                        onTrashButtonClick={ this.onTrashButtonClick }
-                                                        onItemInputChange={ this.onItemInputChange } />
+                        <Items items={ this.items } onRef={ Items => (this.Items = Items) } onItemDataChange={ this.computeSummary }/>
                     </Col>
                 </Row>
                 <FormActionBar onCancelButtonClick={ this.props.onCancelButtonClick }

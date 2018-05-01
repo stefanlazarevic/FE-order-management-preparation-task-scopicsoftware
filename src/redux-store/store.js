@@ -8,14 +8,14 @@ const initialState = { orders };
 
 const customMiddlewares = [thunk];
 
-// const reduxDevToolsMiddleware = window.devToolsExtension && window.devToolsExtension();
+const reduxDevToolsMiddleware = window.devToolsExtension && window.devToolsExtension();
 
 const store = createStore(
     OrdersReducer,
     initialState,
     compose(
         applyMiddleware(...customMiddlewares),
-        // reduxDevToolsMiddleware
+        reduxDevToolsMiddleware
     ),
 );
 
